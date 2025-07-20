@@ -82,14 +82,14 @@ function playRound(humanChoice, computerChoice) {
     }
 }
 
-let humanScore = 0
-let computerScore = 0
-
 function playGame() {
     while(true) {
         playRound(getHumanChoice(),getComputerChoice())
         console.log(`Human score: ${humanScore}\nComputer score: ${computerScore}`)
     }
 }
+
+let humanScore = 0
+let computerScore = 0
 
 playGame()
