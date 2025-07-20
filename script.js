@@ -1,19 +1,13 @@
 function getComputerChoice() {
-    let choices = ["Rock","Paper","Scissors"]
+    let choices = ["rock","paper","scissors"]
     let randomNumber = Math.round(Math.random() * 10) % 3
     return choices[randomNumber]
 }
 
-function getHumanChoice() {
-    let input = prompt("Your choice: ")
-    return input
-}
-
-function playRound(humanChoice, computerChoice) {
-    let gameState = 0
-    switch(humanChoice.toLowerCase()) {
+function determineWinner(humanChoice, computerChoice) {
+    switch(humanChoice) {
         case "rock": {
-            switch(computerChoice.toLowerCase()) {
+            switch(computerChoice) {
                 case "rock": {
                     gameState = 0
                     break
@@ -30,7 +24,7 @@ function playRound(humanChoice, computerChoice) {
             break
         }
         case "paper": {
-            switch(computerChoice.toLowerCase()) {
+            switch(computerChoice) {
                 case "rock": {
                     gameState = 1
                     break
@@ -47,7 +41,7 @@ function playRound(humanChoice, computerChoice) {
             break
         }
         case "scissors": {
-            switch(computerChoice.toLowerCase()) {
+            switch(computerChoice) {
                 case "rock": {
                     gameState = 2
                     break
@@ -64,32 +58,66 @@ function playRound(humanChoice, computerChoice) {
             break
         }
     }
+    return gameState;
+}
+
+function refreshUIOnGameWin(gameState, humanChoice, computerChoice) {
     switch(gameState) {
         case 0: {
-            console.log(`Draw! ${humanChoice} is the same as ${computerChoice}`)
-            break
+            divResults.textContent = `Draw! ${humanChoice} is the same as ${computerChoice}`;
+            break;
         }
         case 1: {
-            console.log(`You win! ${humanChoice} beats ${computerChoice}`)
-            humanScore++
-            break
+            divResults.textContent = `You win! ${humanChoice} beats ${computerChoice}`;
+            computerLives--;
+            break;
         }
         case 2: {
-            console.log(`You lose! ${computerChoice} beats ${humanChoice}`)
-            computerScore++
-            break
+            divResults.textContent = `You lose! ${computerChoice} beats ${humanChoice}`;
+            humanLives--;
+            break;
         }
     }
-}
-
-function playGame() {
-    while(true) {
-        playRound(getHumanChoice(),getComputerChoice())
-        console.log(`Human score: ${humanScore}\nComputer score: ${computerScore}`)
+    if(humanLives == 0) {
+        divLives.textContent = 'You lost the game!';
+        computerLives = 5;
+        humanLives = 5;
+    }
+    else if(computerLives == 0) {
+        divLives.textContent = 'You won the game!';
+        computerLives = 5;
+        humanLives = 5;
+    }
+    else {
+        divLives.textContent = `Your lives: ${humanLives} Computer's lives: ${computerLives}`;
     }
 }
 
-let humanScore = 0
-let computerScore = 0
+function playRound(humanChoice, computerChoice) {
+    let gameState = determineWinner(humanChoice, computerChoice);
+    refreshUIOnGameWin(gameState, humanChoice, computerChoice);
+}
 
-playGame()
+function playGame(humanChoice) {
+    playRound(humanChoice.toLowerCase(), getComputerChoice().toLowerCase());
+}
+
+let buttonRock = document.querySelector("#button-rock");
+let buttonPaper = document.querySelector("#button-paper");
+let buttonScissors = document.querySelector("#button-scissors");
+
+buttonRock.addEventListener('click',
+    () => playGame('rock')
+);
+buttonPaper.addEventListener('click',
+    () => playGame('paper')
+);
+buttonScissors.addEventListener('click',
+    () => playGame('scissors')
+);
+
+let divLives = document.querySelector("#lives");
+let divResults = document.querySelector("#result");
+
+let humanLives = 5;
+let computerLives = 5;
